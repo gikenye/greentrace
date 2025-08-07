@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
+import { MapPin } from 'lucide-react'
 
 // Fix for default markers in Leaflet with webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -42,14 +43,14 @@ export function InteractiveMap({ center, zoom = 13, data, className = "" }: Inte
 
     // Custom icons
     const treeIcon = L.divIcon({
-      html: '<div style="background-color: #16a34a; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+      html: '<div style="background-color: #16a34a; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>',
       className: "custom-div-icon",
       iconSize: [16, 16],
       iconAnchor: [8, 8],
     })
 
     const issueIcon = L.divIcon({
-      html: '<div style="background-color: #dc2626; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+      html: '<div style="background-color: #dc2626; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>',
       className: "custom-div-icon",
       iconSize: [16, 16],
       iconAnchor: [8, 8],
@@ -60,9 +61,12 @@ export function InteractiveMap({ center, zoom = 13, data, className = "" }: Inte
       L.marker([tree.lat, tree.lng], { icon: treeIcon })
         .addTo(map)
         .bindPopup(`
-          <div>
-            <strong>🌳 ${tree.type} Tree</strong>
-            ${tree.plantedBy ? `<br>Planted by: ${tree.plantedBy}` : ""}
+          <div class="p-2">
+            <strong class="text-green-700">🌳 ${tree.type} Tree</strong>
+            ${tree.plantedBy ? `<br><span class="text-sm text-gray-600">Planted by: ${tree.plantedBy}</span>` : ""}
+            <div class="mt-2 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+              Part of urban forest network
+            </div>
           </div>
         `)
     })
@@ -72,9 +76,9 @@ export function InteractiveMap({ center, zoom = 13, data, className = "" }: Inte
       L.marker([issue.lat, issue.lng], { icon: issueIcon })
         .addTo(map)
         .bindPopup(`
-          <div>
-            <strong>⚠️ ${issue.type}</strong>
-            <br>${issue.description}
+          <div class="p-2">
+            <strong class="text-red-700">⚠️ ${issue.type}</strong>
+            <br><span class="text-sm text-gray-600">${issue.description}</span>
           </div>
         `)
     })
@@ -88,5 +92,17 @@ export function InteractiveMap({ center, zoom = 13, data, className = "" }: Inte
     }
   }, [center, zoom, data])
 
-  return <div ref={mapRef} className={`h-64 w-full rounded-lg ${className}`} />
+  return (
+    <div className={`relative ${className}`}>
+      <div ref={mapRef} className="h-48 w-full rounded-lg" />
+      
+      {/* Map Info */}
+      <div className="absolute bottom-2 left-2 bg-white/90 rounded px-2 py-1 text-xs text-gray-600">
+        <div className="flex items-center space-x-1">
+          <MapPin size={12} />
+          <span>Kilimani, Nairobi</span>
+        </div>
+      </div>
+    </div>
+  )
 }
