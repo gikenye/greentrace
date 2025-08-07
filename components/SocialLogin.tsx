@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { LogOut } from "lucide-react"
+import { LogOut } from 'lucide-react'
 
 interface SocialLoginUser {
   id: string
@@ -63,7 +63,7 @@ export function SocialLogin({ user, onLogin, onLogout }: SocialLoginProps) {
 
   if (!mounted) {
     return (
-      <Card>
+      <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
         <CardContent className="p-4">
           <div className="h-16 bg-gray-100 rounded animate-pulse"></div>
         </CardContent>
@@ -73,7 +73,7 @@ export function SocialLogin({ user, onLogin, onLogout }: SocialLoginProps) {
 
   if (user) {
     return (
-      <Card>
+      <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
         <CardContent className="p-4">
           <div className="flex items-center space-x-3">
             <img src={user.avatar || "/placeholder.svg"} alt={user.name} className="w-10 h-10 rounded-full" />
@@ -96,18 +96,21 @@ export function SocialLogin({ user, onLogin, onLogout }: SocialLoginProps) {
   }
 
   return (
-    <Card>
+    <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
       <CardHeader>
-        <CardTitle className="text-center flex items-center justify-center space-x-2">
-          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">👤</div>
-          <span>Sign In</span>
+        <CardTitle className="text-center flex items-center justify-center space-x-2 text-white">
+          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-2xl">🌳</div>
+          <span>Join the Forest Network</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        <p className="text-center text-green-100 text-sm mb-4">
+          Sign in to start mapping trees and building Kilimani's urban forest
+        </p>
         <Button
           onClick={handleGoogleLogin}
           disabled={isLoading === "google"}
-          className="w-full bg-red-600 hover:bg-red-700"
+          className="w-full bg-white text-green-600 hover:bg-gray-50"
         >
           {isLoading === "google" ? "Signing in..." : "Continue with Google"}
         </Button>
@@ -116,7 +119,7 @@ export function SocialLogin({ user, onLogin, onLogout }: SocialLoginProps) {
           onClick={handleGitHubLogin}
           disabled={isLoading === "github"}
           variant="outline"
-          className="w-full border-gray-800 text-gray-800 hover:bg-gray-50 bg-transparent"
+          className="w-full border-white text-white hover:bg-white/10 bg-transparent"
         >
           {isLoading === "github" ? "Signing in..." : "Continue with GitHub"}
         </Button>

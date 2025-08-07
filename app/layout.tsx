@@ -1,13 +1,12 @@
-import React from 'react';
 import type { Metadata } from 'next'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'GreenTrace Lite – Kilimani Environmental Dashboard',
-  description: 'A mobile-first civic platform to report environmental issues and map trees in Kilimani, Nairobi.',
-  keywords: ['GreenTrace', 'Kilimani', 'urban environment', 'civic tech', 'Nairobi'],
-  authors: [{ name: 'GreenTrace Nairobi' }],
-  themeColor: '#14532d', // Dark green for environmental theme
+  title: 'v0 App',
+  description: 'Created with v0',
+  generator: 'v0.dev',
 }
 
 export default function RootLayout({
@@ -17,10 +16,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head />
-      <body className="bg-gray-50 text-gray-900 font-sans antialiased">
-        {children}
-      </body>
+      <head>
+        <style>{`
+html {
+  font-family: ${GeistSans.style.fontFamily};
+  --font-sans: ${GeistSans.variable};
+  --font-mono: ${GeistMono.variable};
+}
+        `}</style>
+      </head>
+      <body>{children}</body>
     </html>
   )
 }
