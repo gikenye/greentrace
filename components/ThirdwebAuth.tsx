@@ -31,6 +31,12 @@ export function ThirdwebAuth({ user, onLogin, onLogout }: ThirdwebAuthProps) {
   const handleGoogleLogin = async () => {
     setIsLoading("google")
     try {
+      const client = thirdwebService.getClient()
+      if (!client) {
+        alert("Authentication service not available. Please check configuration.")
+        return
+      }
+      
       const connectedUser = await thirdwebService.connectWithGoogle()
       if (connectedUser) {
         onLogin(connectedUser)
@@ -48,6 +54,12 @@ export function ThirdwebAuth({ user, onLogin, onLogout }: ThirdwebAuthProps) {
     
     setIsLoading("email")
     try {
+      const client = thirdwebService.getClient()
+      if (!client) {
+        alert("Authentication service not available. Please check configuration.")
+        return
+      }
+      
       const connectedUser = await thirdwebService.connectWithEmail(email)
       if (connectedUser) {
         setOtpSent(true)

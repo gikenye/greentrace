@@ -4,10 +4,18 @@ import { createThirdwebClient } from "thirdweb"
 import { inAppWallet } from "thirdweb/wallets"
 import { defineChain } from "thirdweb/chains"
 
-// Initialize Thirdweb client
-const client = createThirdwebClient({ 
-  clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID || ""
-})
+// Initialize Thirdweb client conditionally
+let client: any = null
+
+function getClient() {
+  if (!client && typeof window !== 'undefined') {
+    const clientId = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID
+    if (clientId) {
+      client = createThirdwebClient({ clientId })
+    }
+  }
+  return client
+}
 
 // Define the chain (you can change this to your preferred network)
 const chain = defineChain({
@@ -42,9 +50,15 @@ export class ThirdwebService {
 
   async connectWithGoogle(): Promise<ThirdwebUser | null> {
     try {
+      const clientInstance = getClient()
+      if (!clientInstance) {
+        console.error("Thirdweb client not initialized")
+        return null
+      }
+      
       // Connect using Google OAuth
       this.account = await this.wallet.connect({
-        client,
+        client: clientInstance,
         strategy: "google",
       })
 
@@ -67,9 +81,15 @@ export class ThirdwebService {
 
   async connectWithEmail(email: string): Promise<ThirdwebUser | null> {
     try {
+      const clientInstance = getClient()
+      if (!clientInstance) {
+        console.error("Thirdweb client not initialized")
+        return null
+      }
+      
       // Connect using email
       this.account = await this.wallet.connect({
-        client,
+        client: clientInstance,
         strategy: "email",
         email,
       })
@@ -125,7 +145,7 @@ export class ThirdwebService {
   }
 
   getClient() {
-    return client
+    return getClient()
   }
 
   getChain() {
