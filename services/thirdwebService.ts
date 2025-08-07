@@ -19,14 +19,14 @@ function getClient() {
 
 // Define the chain (you can change this to your preferred network)
 const chain = defineChain({
-  id: 137, // Polygon Mainnet
-  name: "Polygon",
+  id: 44787, // celo Alfajores
+  name: "Celo Alfajores",
   nativeCurrency: {
-    name: "MATIC",
-    symbol: "MATIC",
+    name: "CELO",
+    symbol: "CELO",
     decimals: 18,
   },
-  rpc: "https://polygon-rpc.com",
+  rpc: "https://alfajores-rpc.celo.org",
 })
 
 export interface ThirdwebUser {

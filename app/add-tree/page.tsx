@@ -31,96 +31,151 @@ export default function AddTreePage() {
   }
 
   return (
-    <div className="min-h-screen bg-green-50">
-      {/* Mobile Header */}
-      <div className="bg-white shadow-sm border-b border-green-100 sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
+      {/* Enhanced Mobile Header */}
+      <div className="shadow-lg sticky top-0 z-10" style={{background: 'linear-gradient(to right, #00563B, #006B47)'}}>
         <div className="p-4">
-          <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" onClick={() => router.back()} className="text-green-700 hover:bg-green-50 p-2">
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => router.back()} 
+              className="text-white hover:bg-white/20 p-2 rounded-full"
+            >
               <ArrowLeft size={20} />
             </Button>
-            <div>
-              <h1 className="text-lg font-bold text-green-800">Document Tree</h1>
-              <p className="text-sm text-green-600">Add to urban forest database</p>
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <Tree size={24} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">Document Tree</h1>
+                <p className="text-sm text-green-100">Add to urban forest database</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="p-4 space-y-4">
-        {/* Location Status */}
-        <MobileCard>
-          <MobileCardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <MapPin size={16} className="text-green-600" />
-                <span className="text-sm font-medium">Documentation Location</span>
+        {/* Enhanced Location Status */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{backgroundColor: '#00563B20'}}>
+                <MapPin size={20} style={{color: '#00563B'}} />
               </div>
-              <Button variant="outline" size="sm" onClick={refreshLocation} disabled={loading}>
-                <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+              <div>
+                <h3 className="font-bold text-green-800">Documentation Location</h3>
+                <p className="text-sm text-green-600">GPS coordinates for tree mapping</p>
+              </div>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={refreshLocation} 
+              disabled={loading}
+              className="rounded-full border-green-300 text-green-600 hover:bg-green-50"
+            >
+              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+            </Button>
+          </div>
+          
+          {loading && (
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <div className="flex items-center space-x-3">
+                <RefreshCw size={20} className="animate-spin text-blue-600" />
+                <div>
+                  <p className="font-medium text-blue-800">Getting precise location...</p>
+                  <p className="text-sm text-blue-600">This may take a few seconds</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <AlertTriangle size={16} className="text-red-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-red-800">Location Error</p>
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={refreshLocation} 
+                className="border-red-300 text-red-600 hover:bg-red-50"
+              >
+                Try Again
               </Button>
             </div>
-            
-            {loading && (
-              <div className="flex items-center space-x-2 text-green-600">
-                <RefreshCw size={16} className="animate-spin" />
-                <span className="text-sm">Getting precise location...</span>
-              </div>
-            )}
-            
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-600">{error}</p>
-                <Button variant="outline" size="sm" onClick={refreshLocation} className="mt-2">
-                  Try Again
-                </Button>
-              </div>
-            )}
-            
-            {latitude && longitude && (
-              <div className="bg-green-100 border border-green-200 rounded-lg p-3">
-                <div className="flex items-center space-x-2 mb-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm font-medium text-green-700">Location confirmed</span>
+          )}
+          
+          {latitude && longitude && (
+            <div className="rounded-xl p-4 border" style={{background: 'linear-gradient(to right, #00563B10, #006B4710)', borderColor: '#00563B40'}}>
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{backgroundColor: '#00563B'}}>
+                  <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
                 </div>
-                <p className="text-sm font-mono text-green-600">
+                <div>
+                  <p className="font-bold" style={{color: '#00563B'}}>Location Confirmed</p>
+                  <p className="text-sm" style={{color: '#00563B'}}>Ready for tree documentation</p>
+                </div>
+              </div>
+              <div className="bg-white/50 rounded-lg p-3">
+                <p className="text-sm font-mono font-medium" style={{color: '#00563B'}}>
                   {latitude.toFixed(6)}, {longitude.toFixed(6)}
                 </p>
-                <p className="text-xs text-green-500">Kilimani, Nairobi</p>
+
               </div>
-            )}
-          </MobileCardContent>
-        </MobileCard>
+            </div>
+          )}
+        </div>
 
         {/* Tree Documentation Component */}
         <TreeDocumentation
           onDocumentationComplete={handleDocumentationComplete}
-          latitude={latitude}
-          longitude={longitude}
           userId={user?.address || 'anonymous'}
         />
 
-        {/* Success Message */}
+        {/* Enhanced Success Message */}
         {classificationResult && (
-          <MobileCard variant="primary">
-            <MobileCardContent className="p-6 text-center">
-              <Tree className="mx-auto mb-3" size={32} />
-              <h3 className="text-lg font-bold mb-2">
-                {classificationResult.species} Successfully Documented
-              </h3>
-              <p className="text-green-100 mb-3">
-                Added to Kilimani's urban forest database for conservation tracking
-              </p>
-              <div className="bg-white/20 rounded-lg p-3">
-                <p className="text-sm">
-                  <strong>Conservation Status:</strong> {classificationResult.conservationStatus}
-                </p>
-                <p className="text-xs text-green-100 mt-1">
-                  This data helps monitor deforestation and urban development impact
+          <div className="rounded-2xl p-8 text-center text-white shadow-xl border-4" style={{background: 'linear-gradient(to right, #00563B, #006B47)', borderColor: '#00563B40'}}>
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Tree size={40} />
+            </div>
+            <h3 className="text-2xl font-bold mb-3">
+              🎉 {classificationResult.species} Successfully Documented!
+            </h3>
+            <p className="text-green-100 mb-6 text-lg">
+              Added to Kilimani's urban forest database for conservation tracking
+            </p>
+            <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
+              <div className="flex items-center justify-center space-x-2 mb-2">
+                <span className="text-lg">📊</span>
+                <p className="font-bold">
+                  Conservation Status: {classificationResult.conservationStatus}
                 </p>
               </div>
-            </MobileCardContent>
-          </MobileCard>
+              <p className="text-sm text-green-100">
+                This data helps monitor deforestation and urban development impact
+              </p>
+            </div>
+            <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+              <div className="bg-white/10 rounded-lg p-3">
+                <span className="text-lg block mb-1">🌳</span>
+                <span>Forest Network</span>
+              </div>
+              <div className="bg-white/10 rounded-lg p-3">
+                <span className="text-lg block mb-1">📍</span>
+                <span>GPS Mapped</span>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

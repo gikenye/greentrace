@@ -75,7 +75,7 @@ export interface TokenBalance {
 
 export class BlockchainService {
   private static instance: BlockchainService
-  private contractAddress = process.env.NEXT_PUBLIC_TREE_TOKEN_CONTRACT || "0x..." // Replace with actual contract address
+  private contractAddress = process.env.NEXT_PUBLIC_TREE_TOKEN_CONTRACT || "0x4B0c77BB7583d690A2051805b93Cba415b4421d2" // Replace with actual contract address
   private thirdwebService = ThirdwebService.getInstance()
   
   static getInstance(): BlockchainService {

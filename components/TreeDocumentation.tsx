@@ -11,25 +11,48 @@ import { TreeDocumentationService } from "../services/treeDocumentationService"
 
 interface TreeDocumentationProps {
   onDocumentationComplete: (result: TreeClassificationResult) => void
-  latitude?: number
-  longitude?: number
   userId: string
 }
 
-export function TreeDocumentation({ onDocumentationComplete, latitude, longitude, userId }: TreeDocumentationProps) {
+export function TreeDocumentation({ onDocumentationComplete, userId }: TreeDocumentationProps) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [classifying, setClassifying] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<TreeClassificationResult | null>(null)
   const [documented, setDocumented] = useState(false)
+  const [captureLocation, setCaptureLocation] = useState<{latitude: number, longitude: number} | null>(null)
+  const [locationError, setLocationError] = useState<string | null>(null)
 
   const classificationService = TreeClassificationService.getInstance()
   const documentationService = TreeDocumentationService.getInstance()
 
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageCapture = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
+      // Capture current location when photo is taken
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setCaptureLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            })
+            setLocationError(null)
+          },
+          (error) => {
+            setLocationError("Failed to get precise location. Please ensure location access is enabled.")
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        )
+      } else {
+        setLocationError("Geolocation not supported")
+      }
+      
       setSelectedImage(file)
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -56,7 +79,7 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
   }
 
   const submitDocumentation = async () => {
-    if (!result || !latitude || !longitude) return
+    if (!result || !captureLocation) return
 
     setSubmitting(true)
     try {
@@ -64,8 +87,8 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
       
       await documentationService.submitTreeRecord(
         result,
-        latitude,
-        longitude,
+        captureLocation.latitude,
+        captureLocation.longitude,
         imageHash,
         userId
       )
@@ -109,6 +132,8 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
                       setSelectedImage(null)
                       setResult(null)
                       setDocumented(false)
+                      setCaptureLocation(null)
+                      setLocationError(null)
                     }}
                     className="border-green-600 text-green-600"
                   >
@@ -118,14 +143,14 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
               ) : (
                 <div className="text-green-600">
                   <Camera size={32} className="mx-auto mb-2" />
-                  <p className="font-medium">Capture Tree Photo</p>
-                  <p className="text-sm text-green-500">Help document urban forest</p>
+                  <p className="font-medium">Take Live Photo</p>
+                  <p className="text-sm text-green-500">Camera only - location captured automatically</p>
                   <input
                     id="tree-image"
                     type="file"
                     accept="image/*"
                     capture="environment"
-                    onChange={handleImageSelect}
+                    onChange={handleImageCapture}
                     className="mt-3"
                   />
                 </div>
@@ -198,7 +223,7 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
               {!documented ? (
                 <Button
                   onClick={submitDocumentation}
-                  disabled={submitting || !latitude || !longitude}
+                  disabled={submitting || !captureLocation}
                   className="w-full bg-green-600 hover:bg-green-700 mt-4"
                 >
                   {submitting ? (
@@ -231,24 +256,28 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
         <MobileCardContent className="p-4">
           <div className="flex items-center space-x-2 mb-2">
             <MapPin size={16} className="text-green-600" />
-            <span className="text-sm font-medium">Documentation Location</span>
+            <span className="text-sm font-medium">Photo Location</span>
           </div>
           
-          {latitude && longitude ? (
+          {captureLocation ? (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
               <div className="flex items-center space-x-2 mb-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium text-green-700">Location confirmed</span>
+                <span className="text-sm font-medium text-green-700">Location captured with photo</span>
               </div>
               <p className="text-sm font-mono text-green-600">
-                {latitude.toFixed(6)}, {longitude.toFixed(6)}
+                {captureLocation.latitude.toFixed(6)}, {captureLocation.longitude.toFixed(6)}
               </p>
-              <p className="text-xs text-green-500">Kilimani, Nairobi</p>
+            </div>
+          ) : locationError ? (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center space-x-2">
+              <AlertTriangle size={16} className="text-red-600" />
+              <span className="text-sm text-red-700">{locationError}</span>
             </div>
           ) : (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-center space-x-2">
-              <AlertTriangle size={16} className="text-yellow-600" />
-              <span className="text-sm text-yellow-700">Location required for documentation</span>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center space-x-2">
+              <Clock size={16} className="text-blue-600" />
+              <span className="text-sm text-blue-700">Location will be captured when you take a photo</span>
             </div>
           )}
         </MobileCardContent>
@@ -264,14 +293,14 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
             <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-xs">1</div>
             <div>
               <p className="font-medium">Clear Photo</p>
-              <p className="text-gray-600">Capture leaves, bark, and overall tree structure</p>
+              <p className="text-gray-600">Take photo with camera - location captured automatically</p>
             </div>
           </div>
           <div className="flex items-start space-x-3">
             <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-xs">2</div>
             <div>
-              <p className="font-medium">Accurate Location</p>
-              <p className="text-gray-600">Stand close to the tree for precise GPS coordinates</p>
+              <p className="font-medium">Stand Close</p>
+              <p className="text-gray-600">Position yourself near the tree for accurate GPS mapping</p>
             </div>
           </div>
           <div className="flex items-start space-x-3">
