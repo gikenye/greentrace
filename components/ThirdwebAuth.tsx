@@ -21,6 +21,7 @@ export function ThirdwebAuth({ user, onLogin, onLogout }: ThirdwebAuthProps) {
   const [otp, setOtp] = useState("")
   const [otpSent, setOtpSent] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
 
   const thirdwebService = ThirdwebService.getInstance()
 
@@ -126,7 +127,7 @@ export function ThirdwebAuth({ user, onLogin, onLogout }: ThirdwebAuthProps) {
 
   if (user) {
     return (
-      <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+      <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white cursor-pointer" onClick={() => setShowWalletModal(true)}>
         <CardContent className="p-4">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -147,21 +148,67 @@ export function ThirdwebAuth({ user, onLogin, onLogout }: ThirdwebAuthProps) {
                 {user.address.slice(0, 6)}...{user.address.slice(-4)}
               </p>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              disabled={isLoading === "logout"}
-              className="text-red-600 border-red-600 hover:bg-red-50 bg-transparent"
-            >
-              {isLoading === "logout" ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
-              ) : (
-                <LogOut size={16} />
-              )}
-            </Button>
+            <div className="text-xs text-green-100">Tap to view</div>
           </div>
         </CardContent>
+        
+        {showWalletModal && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowWalletModal(false)}>
+            <div className="bg-white rounded-2xl max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+              <Card className="border-0 shadow-none">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-green-800">
+                    <span>Wallet Details</span>
+                    <Button variant="ghost" size="sm" onClick={() => setShowWalletModal(false)}>
+                      ×
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                      <Wallet size={24} className="text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-green-800">{user.name || "Tree Mapper"}</p>
+                      <p className="text-sm text-green-600">{user.email}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-700">Wallet Address</p>
+                    <p className="text-xs font-mono bg-gray-100 p-2 rounded break-all">
+                      {user.address}
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="bg-blue-50 p-2 rounded text-center">
+                      <div className="font-medium text-blue-800">Network</div>
+                      <div className="text-blue-600">Polygon</div>
+                    </div>
+                    <div className="bg-green-50 p-2 rounded text-center">
+                      <div className="font-medium text-green-800">Status</div>
+                      <div className="text-green-600">Connected</div>
+                    </div>
+                  </div>
+                  
+                  <Button
+                    onClick={handleLogout}
+                    disabled={isLoading === "logout"}
+                    className="w-full bg-red-500 hover:bg-red-600 text-white"
+                  >
+                    {isLoading === "logout" ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <><LogOut size={16} className="mr-2" />Disconnect Wallet</>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
       </Card>
     )
   }
