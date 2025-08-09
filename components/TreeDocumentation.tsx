@@ -199,57 +199,52 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
             <Progress value={result.confidence * 100} className="bg-blue-200" />
           </div>
 
-              {!documented ? (
-                <Button
-                  onClick={submitDocumentation}
-                  disabled={submitting || !latitude || !longitude}
-                  className="w-full mt-4"
-                  style={{backgroundColor: '#00563B'}}
-                >
-                  {submitting ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Registering tree...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <MapPin className="mr-2" size={16} />
-                      Register Tree
-                    </>
-                  )}
-                </Button>
-              ) : (
-                <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                      <CheckCircle size={20} className="text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-green-800">Tree Registered Successfully!</h4>
-                      <p className="text-sm text-green-600">Added to the permanent forest record</p>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-lg p-3 space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Status:</span>
-                      <span className="text-green-700 font-medium">✅ Verified & Secured</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Reward:</span>
-                      <span className="text-blue-700 font-medium">🪙 Tokens earned</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Impact:</span>
-                      <span className="text-purple-700 font-medium">🌍 Forest preserved</span>
-                    </div>
-                  </div>
+          {!documented ? (
+            <Button
+              onClick={submitDocumentation}
+              disabled={submitting || !latitude || !longitude}
+              className="w-full mt-4"
+              style={{backgroundColor: '#00563B'}}
+            >
+              {submitting ? (
+                <div className="flex items-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Registering tree...</span>
                 </div>
+              ) : (
+                <>
+                  <MapPin className="mr-2" size={16} />
+                  Register Tree
+                </>
               )}
+            </Button>
+          ) : (
+            <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                  <CheckCircle size={20} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-green-800">Tree Registered Successfully!</h4>
+                  <p className="text-sm text-green-600">Added to the permanent forest record</p>
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Status:</span>
+                  <span className="text-green-700 font-medium">✅ Verified & Secured</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Reward:</span>
+                  <span className="text-blue-700 font-medium">🪙 Tokens earned</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Impact:</span>
+                  <span className="text-purple-700 font-medium">🌍 Forest preserved</span>
+                </div>
+              </div>
             </div>
-          </MobileCardContent>
-        </MobileCard>
-      )}
-
+          )}
         </div>
       )}
 
