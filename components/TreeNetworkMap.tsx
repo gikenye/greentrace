@@ -39,7 +39,7 @@ export function TreeNetworkMap({ center, zoom = 14, treeRecords, userRecords, cl
 
     // Custom icons for different tree types
     const userTreeIcon = L.divIcon({
-      html: '<div style="background-color: #00563B; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+      html: '<div style="background-color: #416600; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
       className: "custom-div-icon",
       iconSize: [22, 22],
       iconAnchor: [11, 11],
@@ -77,7 +77,7 @@ export function TreeNetworkMap({ center, zoom = 14, treeRecords, userRecords, cl
           const connection = L.polyline(
             [[tree1.latitude, tree1.longitude], [tree2.latitude, tree2.longitude]],
             {
-              color: isUserConnection ? "#00563B" : "#059669",
+              color: isUserConnection ? "#416600" : "#059669",
               weight: isUserConnection ? 3 : 1,
               opacity: 0.7,
               dashArray: isUserConnection ? undefined : "5, 5"

@@ -66,7 +66,7 @@ export function TreeNetworkCard({ treeRecords, userRecords, connections }: TreeN
 
         {/* Recent Trees */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-sm" style={{color: '#00563B'}}>Recent Trees</h4>
+          <h4 className="font-semibold text-sm" style={{color: '#416600'}}>Recent Trees</h4>
           {treeRecords.slice(0, 4).map((tree) => {
             const isUserTree = userRecords.some(ur => ur.id === tree.id)
             
