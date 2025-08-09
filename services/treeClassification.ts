@@ -21,6 +21,9 @@ export interface TreeRecord {
   submittedBy: string
   verified: boolean
   conservationStatus: string
+  transactionHash: string
+  blockNumber: number
+  gasUsed: string
 }
 
 const treeSpeciesDatabase: Record<string, TreeClassificationResult> = {

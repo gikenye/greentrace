@@ -39,7 +39,7 @@ export function TreeNetworkMap({ center, zoom = 14, treeRecords, userRecords, cl
 
     // Custom icons for different tree types
     const userTreeIcon = L.divIcon({
-      html: '<div style="background-color: #16a34a; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+      html: '<div style="background-color: #00563B; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
       className: "custom-div-icon",
       iconSize: [22, 22],
       iconAnchor: [11, 11],
@@ -63,8 +63,11 @@ export function TreeNetworkMap({ center, zoom = 14, treeRecords, userRecords, cl
     const connections: L.Polyline[] = []
     const maxDistance = 0.005 // Maximum distance for connections (roughly 500m)
 
-    treeRecords.forEach((tree1, i) => {
-      treeRecords.slice(i + 1).forEach((tree2) => {
+    for (let i = 0; i < treeRecords.length; i++) {
+      for (let j = i + 1; j < treeRecords.length; j++) {
+        const tree1 = treeRecords[i]
+        const tree2 = treeRecords[j]
+        
         const distance = Math.sqrt(
           Math.pow(tree1.latitude - tree2.latitude, 2) + Math.pow(tree1.longitude - tree2.longitude, 2)
         )
@@ -74,15 +77,16 @@ export function TreeNetworkMap({ center, zoom = 14, treeRecords, userRecords, cl
           const connection = L.polyline(
             [[tree1.latitude, tree1.longitude], [tree2.latitude, tree2.longitude]],
             {
-              color: isUserConnection ? "#16a34a" : "#059669",
-              weight: isUserConnection ? 2 : 1,
-              opacity: 0.6,
+              color: isUserConnection ? "#00563B" : "#059669",
+              weight: isUserConnection ? 3 : 1,
+              opacity: 0.7,
+              dashArray: isUserConnection ? undefined : "5, 5"
             }
           ).addTo(map)
           connections.push(connection)
         }
-      })
-    })
+      }
+    }
 
     // Add tree markers
     treeRecords.forEach((tree) => {

@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import dynamic from "next/dynamic"
 import { ThirdwebUser } from "../services/thirdwebService"
 import { TreeDocumentationService } from "../services/treeDocumentationService"
+import { TreeNetworkCard } from "../components/TreeNetworkCard"
 
 // Dynamically import the map component
 const TreeNetworkMap = dynamic(
@@ -38,6 +39,7 @@ export default function HomePage() {
   const treeRecords = documentationService.getTreeRecords()
   const userRecords = user ? documentationService.getUserTreeRecords(user.address) : []
   const stats = documentationService.getNetworkStats(user?.address)
+  const connections = documentationService.calculateTreeConnections()
 
   const handleLogin = (userData: ThirdwebUser) => {
     setUser(userData)
@@ -100,33 +102,45 @@ export default function HomePage() {
 
         {user && (
           <>
-            {/* User Impact Stats */}
-            <MobileCard variant="primary">
-              <MobileCardContent className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h2 className="text-lg font-bold">Your Documentation</h2>
-                    <p className="text-green-100 text-sm">Contributing to forest preservation</p>
-                  </div>
-                  <BarChart3 size={24} />
+            {/* Impact Cards Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-white rounded-xl p-4 shadow-md border border-green-100">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{backgroundColor: '#00563B'}}>
+                  <Tree size={20} className="text-white" />
                 </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold" style={{color: '#00563B'}}>{stats.userContributions}</div>
+                  <div className="text-xs text-gray-600">Trees Added</div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-xl p-4 shadow-md border border-green-100">
+                <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl">🌿</span>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-emerald-600">{stats.speciesCount}</div>
+                  <div className="text-xs text-gray-600">Species</div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-xl p-4 shadow-md border border-green-100">
+                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <MapPin size={20} className="text-white" />
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{stats.areasCovered}</div>
+                  <div className="text-xs text-gray-600">Areas</div>
+                </div>
+              </div>
+            </div>
 
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold">{stats.userContributions}</div>
-                    <div className="text-xs text-green-100">Trees</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.speciesCount}</div>
-                    <div className="text-xs text-green-100">Species</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.areasCovered}</div>
-                    <div className="text-xs text-green-100">Areas</div>
-                  </div>
-                </div>
-              </MobileCardContent>
-            </MobileCard>
+            {/* Tree Network Connections */}
+            <TreeNetworkCard
+              treeRecords={treeRecords}
+              userRecords={userRecords}
+              connections={connections}
+            />
 
             {/* Forest Network Map */}
             <MobileCard>
@@ -135,7 +149,7 @@ export default function HomePage() {
                   <span>Kilimani Forest Network</span>
                   <div className="flex items-center space-x-3 text-xs">
                     <div className="flex items-center space-x-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full" style={{backgroundColor: '#00563B'}}></div>
                       <span>Your Trees</span>
                     </div>
                     <div className="flex items-center space-x-1">
@@ -162,25 +176,34 @@ export default function HomePage() {
               </MobileCardContent>
             </MobileCard>
 
-            {/* Primary Action */}
-            <Button
-              onClick={() => router.push("/add-tree")}
-              className="w-full bg-green-600 hover:bg-green-700 h-14 text-lg"
-              size="lg"
-            >
-              <Plus size={24} className="mr-3" />
-              Document New Tree
-            </Button>
+            {/* Action Cards */}
+            <div className="grid grid-cols-2 gap-4">
+              <div 
+                onClick={() => router.push("/add-tree")}
+                className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 cursor-pointer transform hover:scale-105 transition-all duration-200"
+              >
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{backgroundColor: '#00563B'}}>
+                  <Plus size={28} className="text-white" />
+                </div>
+                <div className="text-center">
+                  <h3 className="font-bold text-lg mb-1" style={{color: '#00563B'}}>Add Tree</h3>
+                  <p className="text-sm text-gray-600">Document & earn rewards</p>
+                </div>
+              </div>
 
-            {/* Secondary Action */}
-            <Button
-              onClick={() => router.push("/report")}
-              variant="outline"
-              className="w-full border-green-600 text-green-600 hover:bg-green-50 h-12"
-            >
-              <AlertTriangle size={20} className="mr-2" />
-              Report Environmental Issue
-            </Button>
+              <div 
+                onClick={() => router.push("/report")}
+                className="bg-white rounded-2xl p-6 shadow-lg border border-orange-100 cursor-pointer transform hover:scale-105 transition-all duration-200"
+              >
+                <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <AlertTriangle size={28} className="text-white" />
+                </div>
+                <div className="text-center">
+                  <h3 className="font-bold text-lg text-orange-600 mb-1">Report Issue</h3>
+                  <p className="text-sm text-gray-600">Environmental concerns</p>
+                </div>
+              </div>
+            </div>
 
             {/* Location Status */}
             <MobileCard>

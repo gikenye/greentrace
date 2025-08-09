@@ -169,56 +169,80 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
 
       {/* Classification Result */}
       {result && (
-        <MobileCard variant="secondary">
-          <MobileCardContent className="p-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-lg text-green-800">{result.species}</h3>
-                <Badge className={`${classificationService.getConservationBgColor(result.conservationStatus)} ${classificationService.getConservationColor(result.conservationStatus)} border-0`}>
-                  {result.conservationStatus}
-                </Badge>
-              </div>
-              
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <span className="text-2xl">🌳</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-xl" style={{color: '#00563B'}}>{result.species}</h3>
               {result.scientificName && (
                 <p className="text-sm italic text-gray-600">{result.scientificName}</p>
               )}
-              
-              {result.description && (
-                <p className="text-sm text-gray-700">{result.description}</p>
-              )}
-              
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Identification Confidence:</span>
-                  <span className="font-medium">{(result.confidence * 100).toFixed(1)}%</span>
-                </div>
-                <Progress value={result.confidence * 100} className="bg-gray-200" />
-              </div>
+              <Badge className={`mt-1 ${classificationService.getConservationBgColor(result.conservationStatus)} ${classificationService.getConservationColor(result.conservationStatus)} border-0`}>
+                {result.conservationStatus}
+              </Badge>
+            </div>
+          </div>
+          
+          {result.description && (
+            <div className="bg-gray-50 rounded-lg p-3 mb-4">
+              <p className="text-sm text-gray-700">{result.description}</p>
+            </div>
+          )}
+          
+          <div className="bg-blue-50 rounded-lg p-3 mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-blue-800">Identification Confidence</span>
+              <span className="text-sm font-bold text-blue-900">{(result.confidence * 100).toFixed(1)}%</span>
+            </div>
+            <Progress value={result.confidence * 100} className="bg-blue-200" />
+          </div>
 
               {!documented ? (
                 <Button
                   onClick={submitDocumentation}
                   disabled={submitting || !latitude || !longitude}
-                  className="w-full bg-green-600 hover:bg-green-700 mt-4"
+                  className="w-full mt-4"
+                  style={{backgroundColor: '#00563B'}}
                 >
                   {submitting ? (
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Documenting Tree...</span>
+                      <span>Registering tree...</span>
                     </div>
                   ) : (
                     <>
                       <MapPin className="mr-2" size={16} />
-                      Document Tree Location
+                      Register Tree
                     </>
                   )}
                 </Button>
               ) : (
-                <div className="mt-4 p-3 bg-green-100 rounded-lg flex items-center space-x-2 text-green-800">
-                  <CheckCircle size={16} />
-                  <span className="text-sm font-medium">
-                    Tree successfully documented and added to forest network
-                  </span>
+                <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                      <CheckCircle size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-green-800">Tree Registered Successfully!</h4>
+                      <p className="text-sm text-green-600">Added to the permanent forest record</p>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Status:</span>
+                      <span className="text-green-700 font-medium">✅ Verified & Secured</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Reward:</span>
+                      <span className="text-blue-700 font-medium">🪙 Tokens earned</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Impact:</span>
+                      <span className="text-purple-700 font-medium">🌍 Forest preserved</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -226,63 +250,63 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
         </MobileCard>
       )}
 
+        </div>
+      )}
+
       {/* Location Status */}
-      <MobileCard>
-        <MobileCardContent className="p-4">
-          <div className="flex items-center space-x-2 mb-2">
-            <MapPin size={16} className="text-green-600" />
-            <span className="text-sm font-medium">Documentation Location</span>
+      <div className="bg-white rounded-2xl p-4 shadow-md border border-blue-100">
+        <div className="flex items-center space-x-3 mb-3">
+          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+            <MapPin size={20} className="text-blue-600" />
           </div>
-          
-          {latitude && longitude ? (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-              <div className="flex items-center space-x-2 mb-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium text-green-700">Location confirmed</span>
-              </div>
-              <p className="text-sm font-mono text-green-600">
-                {latitude.toFixed(6)}, {longitude.toFixed(6)}
-              </p>
-              <p className="text-xs text-green-500">Kilimani, Nairobi</p>
-            </div>
-          ) : (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-center space-x-2">
-              <AlertTriangle size={16} className="text-yellow-600" />
-              <span className="text-sm text-yellow-700">Location required for documentation</span>
-            </div>
-          )}
-        </MobileCardContent>
-      </MobileCard>
+          <div>
+            <h3 className="font-semibold text-blue-800">Tree Location</h3>
+            <p className="text-xs text-gray-500">GPS coordinates for mapping</p>
+          </div>
+        </div>
+        
+        {latitude && longitude ? (
+          <div className="bg-green-50 rounded-lg p-3">
+            <p className="text-sm text-green-700 font-medium mb-1">✅ Location confirmed</p>
+            <p className="text-xs font-mono text-gray-600">
+              {latitude.toFixed(6)}, {longitude.toFixed(6)}
+            </p>
+          </div>
+        ) : (
+          <div className="bg-yellow-50 rounded-lg p-3 flex items-center space-x-2">
+            <AlertTriangle size={16} className="text-yellow-600" />
+            <span className="text-sm text-yellow-700">Location required for registration</span>
+          </div>
+        )}
+      </div>
 
       {/* Documentation Guide */}
-      <MobileCard>
-        <MobileCardHeader>
-          <MobileCardTitle className="text-green-800">Documentation Tips</MobileCardTitle>
-        </MobileCardHeader>
-        <MobileCardContent className="space-y-3 text-sm">
-          <div className="flex items-start space-x-3">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-xs">1</div>
+      <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+        <h3 className="font-bold text-lg mb-4" style={{color: '#00563B'}}>Documentation Tips</h3>
+        <div className="grid grid-cols-1 gap-4">
+          <div className="flex items-center space-x-4 p-3 bg-green-50 rounded-lg">
+            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
             <div>
-              <p className="font-medium">Clear Photo</p>
-              <p className="text-gray-600">Capture leaves, bark, and overall tree structure</p>
+              <p className="font-semibold text-green-800">Clear Photo</p>
+              <p className="text-sm text-green-600">Capture leaves, bark, and tree structure</p>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-xs">2</div>
+          <div className="flex items-center space-x-4 p-3 bg-blue-50 rounded-lg">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
             <div>
-              <p className="font-medium">Accurate Location</p>
-              <p className="text-gray-600">Stand close to the tree for precise GPS coordinates</p>
+              <p className="font-semibold text-blue-800">Accurate Location</p>
+              <p className="text-sm text-blue-600">Stand close for precise GPS coordinates</p>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-xs">3</div>
+          <div className="flex items-center space-x-4 p-3 bg-purple-50 rounded-lg">
+            <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
             <div>
-              <p className="font-medium">Verify Results</p>
-              <p className="text-gray-600">Check if the identified species matches your observation</p>
+              <p className="font-semibold text-purple-800">Verify Results</p>
+              <p className="text-sm text-purple-600">Check if species matches your observation</p>
             </div>
           </div>
-        </MobileCardContent>
-      </MobileCard>
+        </div>
+      </div>
     </div>
   )
 }
