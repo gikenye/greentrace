@@ -64,7 +64,6 @@ export function TreeDetailsModal({ tree, isOpen, onClose, isUserTree = false }: 
                 <p className="text-xs font-mono text-gray-600">
                   {tree.latitude.toFixed(6)}, {tree.longitude.toFixed(6)}
                 </p>
-                <p className="text-xs text-gray-500">Kilimani, Nairobi</p>
               </div>
             </div>
 

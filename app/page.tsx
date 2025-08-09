@@ -105,11 +105,11 @@ export default function HomePage() {
             {/* Impact Cards Grid */}
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-white rounded-xl p-4 shadow-md border border-green-100">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{backgroundColor: '#00563B'}}>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{backgroundColor: '#416600'}}>
                   <Tree size={20} className="text-white" />
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold" style={{color: '#00563B'}}>{stats.userContributions}</div>
+                  <div className="text-2xl font-bold" style={{color: '#416600'}}>{stats.userContributions}</div>
                   <div className="text-xs text-gray-600">Trees Added</div>
                 </div>
               </div>
@@ -146,10 +146,10 @@ export default function HomePage() {
             <MobileCard>
               <MobileCardHeader>
                 <MobileCardTitle className="flex items-center justify-between">
-                  <span>Kilimani Forest Network</span>
+                  <span>Urban Forest Network</span>
                   <div className="flex items-center space-x-3 text-xs">
                     <div className="flex items-center space-x-1">
-                      <div className="w-2 h-2 rounded-full" style={{backgroundColor: '#00563B'}}></div>
+                      <div className="w-2 h-2 rounded-full" style={{backgroundColor: '#416600'}}></div>
                       <span>Your Trees</span>
                     </div>
                     <div className="flex items-center space-x-1">
@@ -182,11 +182,11 @@ export default function HomePage() {
                 onClick={() => router.push("/add-tree")}
                 className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 cursor-pointer transform hover:scale-105 transition-all duration-200"
               >
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{backgroundColor: '#00563B'}}>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{backgroundColor: '#416600'}}>
                   <Plus size={28} className="text-white" />
                 </div>
                 <div className="text-center">
-                  <h3 className="font-bold text-lg mb-1" style={{color: '#00563B'}}>Add Tree</h3>
+                  <h3 className="font-bold text-lg mb-1" style={{color: '#416600'}}>Add Tree</h3>
                   <p className="text-sm text-gray-600">Document & earn rewards</p>
                 </div>
               </div>
@@ -225,7 +225,7 @@ export default function HomePage() {
                     <p className="text-sm font-mono text-gray-600">
                       {latitude.toFixed(4)}, {longitude.toFixed(4)}
                     </p>
-                    <p className="text-xs text-gray-500">Kilimani, Nairobi</p>
+
                   </div>
                 )}
               </MobileCardContent>
@@ -266,7 +266,7 @@ export default function HomePage() {
               <Tree className="text-green-600 mx-auto mb-4" size={48} />
               <h2 className="text-xl font-bold text-green-800 mb-2">Document Urban Trees</h2>
               <p className="text-green-600 mb-4">
-                Help preserve Kilimani's urban forest by documenting trees and tracking deforestation patterns.
+                Help preserve the urban forest by documenting trees and tracking deforestation patterns.
               </p>
               <div className="bg-green-100 p-4 rounded-lg space-y-2">
                 <p className="text-sm text-green-700 font-medium">

@@ -5,9 +5,15 @@ import { MobileCard, MobileCardContent, MobileCardHeader, MobileCardTitle } from
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Camera, MapPin, CheckCircle, Clock, AlertTriangle } from 'lucide-react'
+import { Camera, MapPin, CheckCircle, Clock, AlertTriangle, Map, Coins } from 'lucide-react'
 import { TreeClassificationService, TreeClassificationResult } from "../services/treeClassification"
 import { TreeDocumentationService } from "../services/treeDocumentationService"
+import dynamic from "next/dynamic"
+
+const TreeNetworkMap = dynamic(
+  () => import("./TreeNetworkMap").then((mod) => ({ default: mod.TreeNetworkMap })),
+  { ssr: false }
+)
 
 interface TreeDocumentationProps {
   onDocumentationComplete: (result: TreeClassificationResult) => void
@@ -23,6 +29,9 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<TreeClassificationResult | null>(null)
   const [documented, setDocumented] = useState(false)
+  const [showMap, setShowMap] = useState(false)
+  const [showTokenAnimation, setShowTokenAnimation] = useState(false)
+  const [tokensEarned, setTokensEarned] = useState(0)
 
   const classificationService = TreeClassificationService.getInstance()
   const documentationService = TreeDocumentationService.getInstance()
@@ -70,7 +79,16 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
         userId
       )
 
+      const tokens = result.conservationStatus === 'Critical' ? 200 : 
+                    result.conservationStatus === 'Endangered' ? 150 : 
+                    result.conservationStatus === 'Vulnerable' ? 100 : 50
+      
+      setTokensEarned(tokens)
       setDocumented(true)
+      setShowTokenAnimation(true)
+      
+      // Hide animation after 3 seconds
+      setTimeout(() => setShowTokenAnimation(false), 3000)
     } catch (error) {
       console.error('Documentation submission failed:', error)
       alert('Failed to document tree. Please try again.')
@@ -175,7 +193,7 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
               <span className="text-2xl">🌳</span>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-xl" style={{color: '#00563B'}}>{result.species}</h3>
+              <h3 className="font-bold text-xl" style={{color: '#416600'}}>{result.species}</h3>
               {result.scientificName && (
                 <p className="text-sm italic text-gray-600">{result.scientificName}</p>
               )}
@@ -204,7 +222,7 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
               onClick={submitDocumentation}
               disabled={submitting || !latitude || !longitude}
               className="w-full mt-4"
-              style={{backgroundColor: '#00563B'}}
+              style={{backgroundColor: '#416600'}}
             >
               {submitting ? (
                 <div className="flex items-center space-x-2">
@@ -219,30 +237,59 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
               )}
             </Button>
           ) : (
-            <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                  <CheckCircle size={20} className="text-white" />
+            <div className="mt-4 space-y-4">
+              {/* Success Card */}
+              <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                    <CheckCircle size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-green-800">🎉 Tree Registered Successfully!</h4>
+                    <p className="text-sm text-green-600">You're making a real difference!</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-green-800">Tree Registered Successfully!</h4>
-                  <p className="text-sm text-green-600">Added to the permanent forest record</p>
+                <div className="bg-white rounded-lg p-3 space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Status:</span>
+                    <span className="text-green-700 font-medium">✅ Verified & Secured</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Reward:</span>
+                    <span className="text-yellow-700 font-medium">🪙 {tokensEarned} TREE tokens</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Impact:</span>
+                    <span className="text-purple-700 font-medium">🌍 Forest preserved</span>
+                  </div>
                 </div>
               </div>
-              <div className="bg-white rounded-lg p-3 space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Status:</span>
-                  <span className="text-green-700 font-medium">✅ Verified & Secured</span>
+              
+              {/* Map Button */}
+              <Button
+                onClick={() => setShowMap(!showMap)}
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                <Map className="mr-2" size={16} />
+                {showMap ? 'Hide Map' : 'View Your Tree on Map'}
+              </Button>
+              
+              {/* Map View */}
+              {showMap && latitude && longitude && (
+                <div className="bg-white rounded-xl border border-blue-200 overflow-hidden">
+                  <div className="p-3 bg-blue-50 border-b">
+                    <h4 className="font-semibold text-blue-800">Your Tree Location</h4>
+                    <p className="text-xs text-blue-600">Now part of the urban forest network</p>
+                  </div>
+                  <TreeNetworkMap
+                    center={[latitude, longitude]}
+                    zoom={16}
+                    treeRecords={documentationService.getTreeRecords()}
+                    userRecords={documentationService.getUserTreeRecords(userId)}
+                    className="h-64"
+                  />
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Reward:</span>
-                  <span className="text-blue-700 font-medium">🪙 Tokens earned</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Impact:</span>
-                  <span className="text-purple-700 font-medium">🌍 Forest preserved</span>
-                </div>
-              </div>
+              )}
             </div>
           )}
         </div>
@@ -277,7 +324,7 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
 
       {/* Documentation Guide */}
       <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
-        <h3 className="font-bold text-lg mb-4" style={{color: '#00563B'}}>Documentation Tips</h3>
+        <h3 className="font-bold text-lg mb-4" style={{color: '#416600'}}>Documentation Tips</h3>
         <div className="grid grid-cols-1 gap-4">
           <div className="flex items-center space-x-4 p-3 bg-green-50 rounded-lg">
             <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
@@ -302,6 +349,25 @@ export function TreeDocumentation({ onDocumentationComplete, latitude, longitude
           </div>
         </div>
       </div>
+      
+      {/* Token Animation Overlay */}
+      {showTokenAnimation && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center pointer-events-none">
+          <div className="bg-white rounded-2xl p-8 text-center animate-bounce">
+            <div className="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Coins size={40} className="text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-yellow-600 mb-2">+{tokensEarned} TREE</h3>
+            <p className="text-lg font-semibold text-green-700">Tokens Minted! 🎉</p>
+            <p className="text-sm text-gray-600 mt-2">You're a forest hero!</p>
+            <div className="flex justify-center space-x-1 mt-3">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={`w-2 h-2 bg-yellow-400 rounded-full animate-ping`} style={{animationDelay: `${i * 0.2}s`}}></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
